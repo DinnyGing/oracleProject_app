@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site`s plans</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h1 class="visually-hidden">Plans </h1>
+
+<header th:insert="blocks/enter-header :: header"></header>
+</br>
+
+<div class="container mt-5 mb-5">
+  <h1>Adding meeting</h1>
+  <form method="post"  action="/meeting/add">
+    <label>Enter title: </label>
+    <input type="text" name="title" class="form-control"></br>
+    <label>Enter choose speakers for meeting: </label></br>
+    <input style="display: none" type="text" id="id_speaker" name="id_speaker" class="form-control"/>
+    <select id="choose_speak" class="alert alert-info mt-5">
+      <div th:each="speaker : ${speakers}" class="alert alert-info mt-2">
+        <option><span th:text="${speaker.id} + ' ' + ${speaker.name}"/></option>
+      </div>
+    </select></br>
+    <label>Enter date: </label>
+    <input type="datetime-local" name="date" class="form-control"></br>
+    <label>Choose address point on map: </label>
+    <span class="form-control">Position: </span>
+    <input style="display: none" type="text" id="position" name="address" class="form-control"/></br>
+    <div style="height: 400px" id="map" class="form-control"></div></br>
+    <label>Enter choose country for meeting: </label></br>
+    <input style="display: none" type="text" id="id_country" name="id_country" class="form-control"/>
+    <select id="choose_c" class="alert alert-info mt-5">
+      <div th:each="country : ${countries}" class="alert alert-info mt-2">
+        <option><span th:text="${country.id} + ' ' + ${country.name}"/></option>
+      </div>
+    </select></br>
+    <label>Enter choose status for meeting: </label></br>
+    <input style="display: none" type="text" id="id_status" name="id_status" class="form-control"/>
+    <select id="choose_s" class="alert alert-info mt-5">
+      <div th:each="status : ${statuses}" class="alert alert-info mt-2">
+        <option><span th:text=" ${status.id} + ' ' + ${status.name}"/></option>
+      </div>
+    </select></br></br>
+    <script>
+      function init(){
+        var $select_speaker = $('#choose_speak');
+        $select_speaker.children()[0].selected = true;
+        var $select_c = $('#choose_c');
+        $select_c.children()[0].selected = true;
+        var $select_s = $('#choose_s');
+        $select_s.children()[0].selected = true;
+      }
+      init();
+      function initMap(){
+        var pos = {lat: 51.513416, lng: -0.129761};
+        var opt = {
+          center: pos,
+          zoom: 15,
+        };
+        var myMap = new google.maps.Map(document.getElementById("map"), opt);
+
+        var marker = new google.maps.Marker({
+          map: myMap,
+          title: "This place is your meeting"
+        });
+
+        var info =  new google.maps.InfoWindow({
+          content: '<h3>This is my place</h3><p>Simply place`s description</p>'
+        });
+
+        marker.addListener("click", function (){
+          info.open(myMap, marker);
+        });
+
+        google.maps.event.addListener(myMap, 'click', function(event) {
+          placeMarker(myMap, event.latLng);
+          myMap.marker
+        });
+        function placeMarker(map, location) {
+          opt = {
+            center: location,
+            zoom: 15,
+          };
+          marker.setPosition(location);
+          $('#position').val(location.lat()+';'+location.lng());
+        }
+      }
+
+      $("#choose_c").change(function() {
+        $( "select option:selected" ).each(function() {
+          $('#id_country').val($("#choose_c").val());
+        });
+      }).trigger("change");
+      $("#choose_s").change(function() {
+        $( "select option:selected" ).each(function() {
+          $('#id_status').val($("#choose_s").val());
+        });
+      }).trigger("change");
+      $("#choose_speak").change(function() {
+        $( "select option:selected" ).each(function() {
+          if($('#id_speaker').val() == "")
+            $('#id_speaker').val($("#choose_speak").val());
+        });
+      }).trigger("change");
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrSYCtjZWNp4YiphosGqbtvyq1jHmInmA&callback=initMap"></script>
+    <button type="submit" class="btn btn-success">Create!</button>
+  </form>
+
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+
+</body>
+</html>

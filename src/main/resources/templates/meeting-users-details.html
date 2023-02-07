@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site`s blog</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<h1 class="visually-hidden">Blog </h1>
+
+<header th:insert="blocks/enter-header :: header"></header>
+</br>
+
+<div class="container mt-5">
+  <h1>Site`s plans</h1>
+  <button><a style="text-decoration: none" th:href="'/meeting/' + ${id_meeting} + '/users/add'">
+    Add user for this meeting</a></button>
+  <div th:each="user : ${users}" class="alert alert-info mt-2">
+    <h3 th:text="${user.getName()}"/>
+    <form th:action="'/meeting/' + ${id_meeting} + '/user/' + ${user.getId()}
+    + '/delete'" method="post">
+      <button type="submit" class="btn btn-warning">Delete this user from this meeting</button>
+    </form>
+    <p>His login is <span th:text="${user.getLogin()}"/></p>
+    <p>His role is <span th:text="${user.getRole().getName()}"/></p>
+    <a th:href="'/meeting/' + ${id_meeting} + '/user/' + ${user.getId()}">More...</a>
+  </div>
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+
+</body>
+</html>

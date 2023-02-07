@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site`s plans</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h1 class="visually-hidden">Hello, create your account!</h1>
+
+<header th:insert="blocks/enter-header :: header"></header>
+</br>
+
+<div class="container mt-5 mb-5">
+  <h1>Site`s plans</h1>
+  <form method="post"  th:action="'/meeting/' + ${id_meeting} + '/users/add'">
+
+    <label>You choose: </label>
+    <input style="display: none" type="text" id="id_company" name="id_company" />
+    <textarea name="users" id="users" class="form-control"></textarea>
+    <select id="choose_user" class="alert alert-info mt-5">
+      <div th:each="user : ${users}" class="alert alert-info mt-2">
+        <option th:valuetype="${user.id}"><span th:text="${user.id} + ' ' + ${user.login}"/></option>
+      </div>
+    </select></br></br>
+    <script>
+      function init(){
+        var $select_s = $('#choose_user');
+        $select_s.children()[0].selected = true;
+      }
+      init();
+      $("#choose_user").change(function() {
+        $('#users').val($('#users').val() + $("#choose_user").val()  + ';');
+      }).trigger("change");
+    </script>
+    <button type="submit" class="btn btn-success">Add!</button>
+  </form>
+
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+
+</body>
+</html>
